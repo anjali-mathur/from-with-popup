@@ -1,0 +1,92 @@
+ 
+  <div class="row">
+    <div class="col-sm-12">
+  <div class="contact-form form-vertical">
+    {%- assign formId = 'ContactForm' -%}
+    {% form 'contact', id: formId %}
+    {%- if form.errors -%}
+    <div class="form-message form-message--error">
+      <h3 tabindex="-1" data-form-status="error">{{ 'contact.form.error_heading' | t }}</h3>
+      <ul>
+        {% for field in form.errors %}
+        <li>
+
+          {% capture field_label %}
+          {% case field %}
+          {% when 'author' %}
+          {{ 'contact.form.name' | t }}
+          {% when 'body' %}
+          {{ 'contact.form.message' | t }}
+          {% else %}
+          {{ form.errors.translated_fields[field] }}
+          {% endcase %}
+          {% endcapture %}
+
+          {% comment %} the href should match the input's id {% endcomment %}
+          <a href="#{{ formId }}-{{ field }}">{{ field_label | strip | capitalize }} {{ form.errors.messages[field] }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {%- endif -%} 
+    {% if form.posted_successfully? %}
+    <script>
+      window.location = "/collections/{{collection.handle}}/products/{{product.handle}}";
+      localStorage['visited'] = "yes";
+    </script>
+    {%else%}
+
+    <div class="defult-form">
+      <div class="cal6">
+        <label for="{{ formId }}-name">{{ 'contact.form.name' | t }}</label>
+        <input class="messageg" required type="text" id="{{ formId }}-name" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+      </div>
+      <div class="cal6"> 
+        <label for="{{ formId }}-name">{{ 'contact.form.lname' | t }}</label>
+        <input class="messageg" required type="text" id="{{ formId }}-name" name="contact[Lastname]" value="{% if form[Lastname] %}{{ form[Lastname] }}{% elsif customer %}{{ customer.lastname }}{% endif %}">
+      </div>
+      <div class="cal12">
+        <label for="{{ formId }}-email">{{ 'contact.form.email' | t }} <span aria-hidden="true">*</span></label>
+        <input
+               type="email"
+               id="{{ formId }}-email"
+               name="contact[email]"
+               autocorrect="off"
+               autocapitalize="off"
+               value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+               aria-required="true"
+               {%- if form.errors contains 'email' -%}
+               class="input--error messageg"
+               aria-invalid="true"
+               aria-describedby="{{ formId }}-email-error"
+               {%- endif -%}
+               required
+               >
+        <span id="{{ formId}}-email-error" class="input-error-message">{% include 'icon-error' %} {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.</span>
+      </div>
+
+      <div class="cal12"> 
+        <label for="{{ formId }}-name">{{ 'contact.form.companyname' | t }}</label>
+        <input class="messageg" required type="text" id="{{ formId }}-name" name="contact[companyname]" value="{% if form[companyname] %}{{ form[companyname] }}{% elsif customer %}{{ customer.lastname }}{% endif %}">
+      </div>
+      <div class="cal12"> 
+        <label for="{{ formId }}-name">{{ 'contact.form.weburl' | t }}</label>
+        <input class="messageg" required type="text" id="{{ formId }}-name" name="contact[weburl]" value="{% if form[weburl] %}{{ form[weburl] }}{% elsif customer %}{{ customer.lastname }}{% endif %}">
+      </div>
+      <div class="clr"></div>
+    </div>
+    <div class="center asfaaa"> <span> <input  type="submit" class="btn sendButton btntohide" value="download" disabled> </span> </div>
+    {%endif%}
+
+    {% endform %}
+  {% for tags1 in product.tags  %}
+  {%if tags1 contains '1_download_' %}
+  <div class="center asfaaa dwnl" style="display:none">
+    {% assign content9 = tags1 | split: '_' %}            
+    <span>   <a class="download btn" href="https://cdn.shopify.com/s/files/1/0035/8229/6137/files/{{content9[2]}}" download="{{content9[2]}}" target="_blank" rel="noopener noreferrer">Download</a> </span>
+  </div>
+  {%endif%} 
+  {%endfor%}
+  </div>
+</div>
+    </div>
